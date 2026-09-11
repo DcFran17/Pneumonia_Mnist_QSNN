@@ -23,4 +23,4 @@ Additionally, the workflow addresses dataset class imbalance using a weighted Cr
 
 To access to my poster:
 ```markdown
-[Ver informe en PDF](./POSTER.pdf)
+[Ver informe en PDF](./POSTER.PDF)
