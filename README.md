@@ -1,25 +1,22 @@
 # QSNN — Pneumonia Classification from Chest X-Rays Using a Quantum Spiking Neural Network
 
-Este repositorio contiene el notebook principal del proyecto **QSNN** enfocado en la clasificación de neumonía a partir de radiografías de tórax utilizando redes neuronales de impulsos cuánticos (QSNN) basadas en la neurona **Alpha** con decaimiento exponencial.
+This repository contains the main notebook for the **QSNN** project, which focuses on classifying pneumonia from chest X-rays using Quantum Spiking Neural Networks (QSNNs) based on the **Alpha** neuron with exponential decay.
 
-## Archivos del repositorio
+## Repository Files
 
-* **Pneumonia_QSNN_Alpha.ipynb** — Notebook principal del experimento. Contiene la arquitectura, configuración, flujo de entrenamiento y evaluación del modelo utilizando el dataset PneumoniaMNIST.
+* **Pneumonia_QSNN_Alpha.ipynb** — The main experiment notebook. It contains the architecture, configuration, training workflow, and model evaluation using the PneumoniaMNIST dataset.
 
-## De qué trata el notebook
+## Notebook Overview
 
-El trabajo aborda la clasificación binaria de neumonía (Casos Normales vs. Neumonía) en imágenes de radiografías de tórax de $28 \times 28$ píxeles (*PneumoniaMNIST*). Para ello, se implementa una arquitectura de Red Neuronal de Impulsos Cuántica (*Quantum Spiking Neural Network* - QSNN) basada en la neurona tipo **Alpha**.
+This work addresses binary pneumonia classification (Normal vs. Pneumonia cases) using $28 \times 28$ pixel chest X-ray images (*PneumoniaMNIST*). To achieve this, a Quantum Spiking Neural Network (QSNN) architecture based on the **Alpha**-type neuron is implemented.
 
-La característica central de la neurona Alpha es la modelación del potencial de membrana y la fuga de señal (*leak*) a través de un factor de decaimiento exponencial $e^{-\tau / T_1}$. La red mapea las características de las imágenes de entrada a parámetros de rotación cuántica ($\theta$) y constantes temporales ($\tau$), procesando la información a lo largo de $25$ pasos temporales y utilizando un gradiente sustituto (*surrogate gradient*) para habilitar la retropropagación (*backpropagation*).
+The defining characteristic of the Alpha neuron is the modeling of membrane potential and signal leakage via an exponential decay factor, $e^{-\tau / T_1}$. The network maps input image features to quantum rotation parameters ($\theta$) and time constants ($\tau$), processing information over $25$ time steps and employing a surrogate gradient to enable backpropagation.
 
-Además, el flujo de trabajo compensa el desbalance de clases del dataset mediante una función de pérdida *Cross-Entropy* ponderada y evalúa el rendimiento del modelo a través de múltiples métricas de clasificación.
+Additionally, the workflow addresses dataset class imbalance using a weighted Cross-Entropy loss function and evaluates model performance through multiple classification metrics. ## Content of each notebook section
 
-## Contenido de cada sección del notebook
-
-1. **Imports and configuration** — Carga las librerías necesarias (PyTorch, Kagglehub, Scikit-Learn, Matplotlib, etc.), fija la semilla de reproducibilidad (`SEED = 1524206349`) y define los hiperparámetros del sistema ($784$ entradas, $1000$ neuronas ocultas, $2$ salidas, $25$ pasos temporales, $5$ épocas, *batch size* de $200$).
-2. **Alpha Neuron** — Implementa la clase `AlphaSurrogate` (paso *forward* y derivada para *backpropagation* con gradiente sustituto) y la clase `Alpha` (módulo de PyTorch que administra la memoria y el umbral de disparo de la neurona con decaimiento $e^{-\tau / T_1}$).
-3. **Loading and preparing PneumoniaMNIST** — Descarga automáticamente el dataset `PneumoniaMNIST` desde Kagglehub, define la clase `PneumoniaDataset` para normalizar los valores de píxel al rango $[0, 1]$ ($3\,882$ imágenes de entrenamiento y $624$ de prueba) y calcula los pesos para corregir el desbalance de clases.
-4. **QSNN Architecture** — Define la red `QSNN`, la cual utiliza capas lineales para generar los ángulos de rotación ($\theta$) y tiempos de decaimiento ($\tau$) en dos capas de neuronas Alpha (capa oculta de $1000$ neuronas y capa de salida de $2$ neuronas).
-5. **Training and evaluation** — Configura el optimizador Adam y entrena la red acumulando la pérdida durante los $25$ pasos temporales de cada muestra. En la evaluación, la clase predicha se determina contando el número total de *spikes* generados por cada neurona de salida.
-6. **Experimental results** — Muestra la tabla de métricas finales en el conjunto de prueba (Exactitud/Accuracy del **84.13%**, F1-Score ponderado de **0.8424**, Precision de **0.8446** y Recall de **0.8413**) y la matriz de confusión correspondiente ($193$ aciertos en Normal y $382$ en Neumonía).
-7. **Loss Evolution** — Grafica la curva de evolución de la función de pérdida durante las $5$ épocas de entrenamiento, mostrando una reducción sostenida de aproximadamente $16.81$ a $15.48$.
+1. **Imports and configuration** — Loads the necessary libraries (PyTorch, Kagglehub, Scikit-Learn, Matplotlib, etc.), sets the reproducibility seed (`SEED = 1524206349`), and defines system hyperparameters ($784$ inputs, $1000$ hidden neurons, $2$ outputs, $25$ time steps, $5$ epochs, batch size of $200$).
+2. **Alpha Neuron** — Implements the `AlphaSurrogate` class (forward pass and derivative for backpropagation using a surrogate gradient) and the `Alpha` class (a PyTorch module managing memory and the neuron's firing threshold with decay $e^{-\tau / T_1}$).
+3. **Loading and preparing PneumoniaMNIST** — Automatically downloads the `PneumoniaMNIST` dataset from Kagglehub, defines the `PneumoniaDataset` class to normalize pixel values ​​to the $[0, 1]$ range ($3,882$ training images and $624$ test images), and calculates weights to correct for class imbalance.
+4. **QSNN Architecture** — Defines the `QSNN` network, which uses linear layers to generate rotation angles ($\theta$) and decay times ($\tau$) for two Alpha neuron layers (a hidden layer of $1000$ neurons and an output layer of $2$ neurons).
+5. **Training and evaluation** — Configures the Adam optimizer and trains the network by accumulating loss over the $25$ time steps of each sample. During evaluation, the predicted class is determined by counting the total number of spikes generated by each output neuron. 6. **Experimental results** — Displays the table of final metrics on the test set (Accuracy of **84.13%**, weighted F1-Score of **0.8424**, Precision of **0.8446**, and Recall of **84.13%**) and the corresponding confusion matrix ($193$ correct predictions for Normal and $382$ for Pneumonia).
+7. **Loss Evolution** — Plots the loss function evolution curve over the $5$ training epochs, showing a sustained reduction from approximately $16.81$ to $15.48$.
